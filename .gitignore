@@ -40,3 +40,6 @@ next-env.d.ts
 
 # generated
 /app/generated/prisma
+
+# Agents
+.opencode
