@@ -1,0 +1,14 @@
+{
+  "profile": "fullstack",
+  "mcps": [
+    "github",
+    "brave",
+    "excel"
+  ],
+  "skills": [
+    "dev-session-docs",
+    "study-notes-synthesizer"
+  ],
+  "notes": "Ideal para sesiones de código largas que requieren GitHub y documentación en Obsidian.",
+  "activated_at": "2026-05-14T02:01:43.000848"
+}

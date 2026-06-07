@@ -1,23 +1,39 @@
-# project-docs
-Documentación y tareas
+# Banneton — Backend
 
-Nombre del proyecto: Banneton 
-Grupo: Berry
+Repositorio de código fuente (backend + API REST) del proyecto **Banneton**.
 
-Contacto:
+## Stack
 
-Gabriel Jeronimo Puentes Umbarila (gpuentesu@unal.edu.co)
-Nicolas Alexander Marin Valencia (Nimarinv@unal.edu.co)
-Samuel Mateo Guerrero Sanjuan (Samguerrerosa@unal.edu.co)
-Sergio Nicolas Vanegas Martinez (Sevanegasm@unal.edu.co)
+- **Framework:** Next.js 16 (App Router)
+- **Lenguaje:** TypeScript 5
+- **ORM:** Prisma 7 + PostgreSQL
+- **Base de datos:** PostgreSQL 16 (Docker local / Supabase)
+- **Contenedores:** Docker + Docker Compose
 
+## Estructura
 
-Descripción:
+```
+app/               # Next.js App Router
+├── api/roles/     # API REST de ejemplo (entidad Rol)
+lib/               # Utilidades (Prisma singleton)
+prisma/            # Esquema de base de datos
+public/            # Assets estáticos
+```
 
-Este proyecto nace de la necesidad real de un emprendedor de panadería pastelería que produce bollería artesanal de alta complejidad técnica: pan rollito, roles de canela, roscón
+## Primer uso
 
-El núcleo del problema es que la gestión de recetas en panadería profesional NO es una lista plana de ingredientes. Es un sistema jerárquico de preparaciones, porcentajes técnicos y procesos interdependientes, que normalmente se gestiona manualmente por medio hojas de cálculo, sistema propenso a errores humanos.
+```bash
+bash setup.sh        # Linux / macOS
+# o
+setup.bat            # Windows
+```
 
-![alt text](unnamed-1.png)
+Ver `setup.sh` para los pasos detallados (instalación, Docker, migraciones, build).
 
+## Documentación del proyecto
 
+- Documentos, diagramas y entregas: [`Berry-Team-UNAL/project-docs`](https://github.com/Berry-Team-UNAL/project-docs)
+
+---
+
+Universidad Nacional de Colombia — Ingeniería de Software

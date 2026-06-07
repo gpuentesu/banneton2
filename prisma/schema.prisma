@@ -1,0 +1,294 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 1 — Usuarios y Roles
+// ═══════════════════════════════════════
+
+model Rol {
+  id_rol     Int      @id @default(autoincrement())
+  nombre_rol String   @unique @db.VarChar(30)
+
+  usuarios   Usuario[]
+
+  @@map("rol")
+}
+
+model Usuario {
+  id_usuario       Int      @id @default(autoincrement())
+  nombre_usuario   String   @db.VarChar(50)
+  apellido_usuario String?  @db.VarChar(100)
+  email            String?  @unique @db.VarChar(100)
+  id_rol           Int
+  activo           Boolean  @default(true)
+
+  rol                  Rol                  @relation(fields: [id_rol], references: [id_rol])
+  recetas_creadas      RecetaBase[]         @relation("RecetaCreador")
+  controles_calidad    ControlCalidad[]
+  bitacoras_supervisadas BitacoraProduccion[] @relation("Supervisor")
+  bitacoras_cerradas   BitacoraProduccion[] @relation("Cerrador")
+
+  @@map("usuario")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 2 — Ingredientes y Proveedores
+// ═══════════════════════════════════════
+
+model Ingrediente {
+  id_ingrediente     Int      @id @default(autoincrement())
+  nombre_ingrediente String   @unique @db.VarChar(100)
+  creado_en          DateTime @default(now()) @db.Timestamptz
+  porcentaje_agua    Float?
+  porcentaje_merma   Float?
+  porcentaje_grasa   Float?
+
+  proveedores ProveedorIngrediente[]
+
+  @@map("ingrediente")
+}
+
+model Proveedor {
+  id_proveedor     Int      @id @default(autoincrement())
+  nombre_proveedor String?  @db.VarChar(100)
+  telefono         String?  @db.VarChar(20)
+  email            String?  @db.VarChar(100)
+  direccion        String?
+  activo           Boolean  @default(true)
+  creado_en        DateTime @default(now()) @db.Timestamptz
+
+  ingredientes ProveedorIngrediente[]
+
+  @@map("proveedor")
+}
+
+model ProveedorIngrediente {
+  id_proveedor_ingrediente Int      @id @default(autoincrement())
+  id_ingrediente           Int
+  id_proveedor             Int
+  costo_por_gramo          Decimal? @db.Decimal(10, 6)
+  creado_en                DateTime @default(now()) @db.Timestamptz
+
+  ingrediente          Ingrediente          @relation(fields: [id_ingrediente], references: [id_ingrediente])
+  proveedor            Proveedor            @relation(fields: [id_proveedor], references: [id_proveedor])
+  receta_ingredientes  RecetaIngrediente[]
+
+  @@map("proveedor_ingrediente")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 3 — Recetas
+// ═══════════════════════════════════════
+
+model RecetaBase {
+  id_receta          Int      @id @default(autoincrement())
+  id_receta_padre    Int?
+  nombre_receta      String?  @db.VarChar(100)
+  descripcion_corta  String?
+  tiempo_coccion_base Int?
+  activo             Boolean  @default(true)
+  creado_por         Int
+  creado_en          DateTime @default(now()) @db.Timestamptz
+
+  padre                RecetaBase?           @relation("SubReceta", fields: [id_receta_padre], references: [id_receta])
+  sub_recetas          RecetaBase[]          @relation("SubReceta")
+  creador              Usuario               @relation("RecetaCreador", fields: [creado_por], references: [id_usuario])
+  ingredientes         RecetaIngrediente[]
+  costos_servicio      CostoServicioReceta[]
+  costos_indirectos    CostoIndirectoReceta[]
+  mano_obra            ManoObraReceta?
+  detalles_pedido      DetallePedido[]
+
+  @@map("receta_base")
+}
+
+model RecetaIngrediente {
+  id_receta_ingrediente    Int      @id @default(autoincrement())
+  id_receta                Int
+  id_proveedor_ingrediente Int
+  orden                    Int
+  cantidad_gramos          Decimal? @db.Decimal(10, 2)
+  nota_preparacion         String?  @db.VarChar(255)
+
+  receta               RecetaBase           @relation(fields: [id_receta], references: [id_receta])
+  proveedor_ingrediente ProveedorIngrediente @relation(fields: [id_proveedor_ingrediente], references: [id_proveedor_ingrediente])
+
+  @@unique([id_receta, orden])
+  @@unique([id_receta, id_proveedor_ingrediente])
+  @@map("receta_ingrediente")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 4 — Costos de Servicios e Indirectos
+// ═══════════════════════════════════════
+
+model CostoServicioReceta {
+  id_costo_servicio   Int      @id @default(autoincrement())
+  id_receta           Int
+  tipo_servicio       String?  @db.VarChar(20)
+  consumo_por_unidad  Decimal? @db.Decimal(10, 4)
+  costo_por_unidad    Decimal? @db.Decimal(10, 4)
+  creado_en           DateTime @default(now()) @db.Timestamptz
+  actualizado_en      DateTime? @db.Timestamptz
+
+  receta RecetaBase @relation(fields: [id_receta], references: [id_receta])
+
+  @@unique([id_receta, tipo_servicio])
+  @@map("costo_servicio_receta")
+}
+
+model CostoIndirectoReceta {
+  id_costo_indirecto Int      @id @default(autoincrement())
+  id_receta          Int
+  concepto           String?  @db.VarChar(100)
+  monto_por_unidad   Decimal? @db.Decimal(10, 4)
+  creado_en          DateTime @default(now()) @db.Timestamptz
+
+  receta RecetaBase @relation(fields: [id_receta], references: [id_receta])
+
+  @@map("costo_indirecto_receta")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 5 — Mano de Obra
+// ═══════════════════════════════════════
+
+model ManoObraReceta {
+  id_mano_obra       Int      @id @default(autoincrement())
+  id_receta          Int      @unique
+  minutos_por_unidad Int?
+  tarifa_hora_eur    Decimal? @db.Decimal(10, 2)
+  creado_en          DateTime @default(now()) @db.Timestamptz
+  actualizado_en     DateTime? @db.Timestamptz
+
+  receta RecetaBase @relation(fields: [id_receta], references: [id_receta])
+
+  @@map("mano_obra_receta")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 6 — Pedidos y Ventas
+// ═══════════════════════════════════════
+
+model PedidoCliente {
+  id_pedido         Int      @id @default(autoincrement())
+  cliente_nombre    String?  @db.VarChar(100)
+  cliente_telefono  String?  @db.VarChar(20)
+  fecha_pedido      DateTime @default(now()) @db.Timestamptz
+  fecha_requerida   DateTime? @db.Timestamptz
+  estado            String   @default("pendiente") @db.VarChar(20)
+  creado_en         DateTime @default(now()) @db.Timestamptz
+
+  detalles DetallePedido[]
+
+  @@map("pedido_cliente")
+}
+
+model DetallePedido {
+  id_detalle                Int      @id @default(autoincrement())
+  id_pedido                 Int
+  id_receta                 Int
+  cantidad_solicitada       Int?
+  precio_unitario_aplicado  Decimal? @db.Decimal(10, 2)
+  nota                      String?  @db.VarChar(255)
+  creado_en                 DateTime @default(now()) @db.Timestamptz
+
+  pedido           PedidoCliente   @relation(fields: [id_pedido], references: [id_pedido])
+  receta           RecetaBase      @relation(fields: [id_receta], references: [id_receta])
+  ordenes          OrdenProduccion[]
+
+  @@map("detalle_pedido")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 7 — Producción y Lotes
+// ═══════════════════════════════════════
+
+model OrdenProduccion {
+  id_orden             Int      @id @default(autoincrement())
+  id_detalle           Int
+  es_prueba            Boolean  @default(false)
+  modificaciones_json  Json?
+  fecha_programacion   DateTime? @db.Timestamptz
+  fecha_inicio         DateTime? @db.Timestamptz
+  fecha_fin            DateTime? @db.Timestamptz
+  estado               String   @default("programada") @db.VarChar(20)
+  creado_en            DateTime @default(now()) @db.Timestamptz
+
+  detalle DetallePedido @relation(fields: [id_detalle], references: [id_detalle])
+  lote    Lote?
+
+  @@map("orden_produccion")
+}
+
+model Lote {
+  id_lote             Int      @id @default(autoincrement())
+  id_orden            Int      @unique
+  cantidad_producida  Int?
+  cantidad_baja       Int      @default(0)
+  fecha_inicio_real   DateTime? @db.Timestamptz
+  fecha_fin_real      DateTime? @db.Timestamptz
+  observaciones       String?
+  creado_en           DateTime @default(now()) @db.Timestamptz
+
+  orden            OrdenProduccion    @relation(fields: [id_orden], references: [id_orden])
+  controles_calidad ControlCalidad[]
+  bitacoras        BitacoraLote[]
+
+  @@map("lote")
+}
+
+model ControlCalidad {
+  id_control         Int      @id @default(autoincrement())
+  id_lote            Int
+  id_usuario         Int
+  tipo_defecto       String?  @db.VarChar(100)
+  cantidad_rechazada Int?
+  observacion        String?
+  fecha_registro     DateTime @default(now()) @db.Timestamptz
+
+  lote    Lote    @relation(fields: [id_lote], references: [id_lote])
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario])
+
+  @@map("control_calidad")
+}
+
+// ═══════════════════════════════════════
+// MÓDULO 8 — Bitácora de Producción
+// ═══════════════════════════════════════
+
+model BitacoraProduccion {
+  id_bitacora        Int      @id @default(autoincrement())
+  fecha_inicio       DateTime? @db.Timestamptz
+  fecha_fin          DateTime? @db.Timestamptz
+  id_supervisor      Int
+  cerrada_por        Int?
+  fecha_cierre       DateTime? @db.Timestamptz
+  modificable_hasta  DateTime? @db.Timestamptz
+  creado_en          DateTime @default(now()) @db.Timestamptz
+
+  supervisor Usuario  @relation("Supervisor", fields: [id_supervisor], references: [id_usuario])
+  cerrador   Usuario? @relation("Cerrador", fields: [cerrada_por], references: [id_usuario])
+  lotes      BitacoraLote[]
+
+  @@map("bitacora_produccion")
+}
+
+model BitacoraLote {
+  id_bitacora_lote Int      @id @default(autoincrement())
+  id_bitacora      Int
+  id_lote          Int
+  fecha_asignacion DateTime @default(now()) @db.Timestamptz
+
+  bitacora BitacoraProduccion @relation(fields: [id_bitacora], references: [id_bitacora])
+  lote     Lote               @relation(fields: [id_lote], references: [id_lote])
+
+  @@unique([id_bitacora, id_lote])
+  @@map("bitacora_lote")
+}

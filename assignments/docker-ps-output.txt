@@ -1,3 +1,0 @@
-CONTAINER ID   IMAGE                              COMMAND                  CREATED          STATUS                             PORTS                                         NAMES
-01106ce1a2d9   postgres:16-alpine                 "docker-entrypoint.s…"   11 seconds ago   Up 10 seconds (health: starting)   0.0.0.0:5432->5432/tcp, [::]:5432->5432/tcp   banneton_db
-0908bedc2538   ghcr.io/github/github-mcp-server   "/server/github-mcp-…"   17 minutes ago   Up 17 minutes                      8082/tcp                                      stoic_dirac
