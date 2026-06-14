@@ -1,64 +1,55 @@
 import js from "@eslint/js";
 import globals from "globals";
-import { globalIgnores } from "eslint/config";
+import tseslint from "typescript-eslint"; // <-- Integración oficial para TypeScript 5
 
 export default [
-	// Aplicar la configuración recomendada de ESLint
-	js.configs.recommended,
-	globalIgnores([
-		".next/**",
-		"out/**",
-		"build/**",
-		"next-env.d.ts",
-		"coverage/**" // Ideal ahora que sumamos Jest
-	]),
-
+	// 1. Archivos que vamos a ignorar por completo
 	{
-		// Aplicar a archivos JavaScript y MJS
-		files: ["**/*.js", "**/*.mjs"],
+		ignores: [
+			".next/**",
+			"out/**",
+			"build/**",
+			"next-env.d.ts",
+			"coverage/**",
+			"./app/layout.tsx",
+			"./app/api/roles/route.ts"
+		]
+	},
+
+	// 2. Configuración base recomendada para JS y TypeScript
+	js.configs.recommended,
+	...tseslint.configs.recommended,
+
+	// 3. Tus reglas personalizadas aplicadas al STACK REAL (*.ts, *.tsx, *.js, *.jsx)
+	{
+		files: ["**/*.{js,mjs,cjs,ts,tsx}"], // <-- ¡Aquí está la magia! Ahora sí lee tus archivos
 		languageOptions: {
 			ecmaVersion: 2022,
 			sourceType: "module",
+			parser: tseslint.parser, // <-- Obligatorio para que entienda TypeScript
 			globals: {
 				...globals.browser,
 				...globals.node,
 				...globals.es2021
 			}
 		},
-
-    
 		rules: {
-			// 1. Identación obligatoria con Tabs
+			// 1. Indentación obligatoria con Tabs
 			"indent": ["error", "tab", { "SwitchCase": 1 }],
-            
-			// 2. Forzar el uso de camelCase para variables y funciones
+			
+			// 2. Forzar el uso de camelCase
 			"camelcase": ["error", { "properties": "always", "ignoreDestructuring": false }],
-            
-			// 3. Buenas prácticas y utilidades adicionales de limpieza:
-
-			// Evitar variables declaradas que no se usan
-			"no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
-            
-			// Forzar el uso de comillas simples (puedes cambiarlo a "double" si prefieres dobles)
+			
+			// 3. Buenas prácticas y limpieza
+			"no-unused-vars": "off", // Apagamos la de JS para usar la de TS que es más precisa
+			"@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
+			
 			"quotes": ["error", "double", { "avoidEscape": true, "allowTemplateLiterals": true }],
-            
-			// Exigir punto y coma al final de cada sentencia
 			"semi": ["error", "always"],
-            
-
-            
-			// Asegurar que haya un salto de línea al final de cada archivo
 			"eol-last": ["error", "always"],
-            
-			// Preferir el uso de 'const' sobre 'let' si la variable nunca se reasigna
 			"prefer-const": "error",
-            
-			// Evitar el uso de 'var' por completo (forzar let y const)
 			"no-var": "error",
-            
-			// Exigir llaves en bloques de control (if, else, for, while) para evitar errores sintácticos
-			"curly": ["error", "all"],
-            
+			"curly": ["error", "all"]
 		}
 	}
 ];
