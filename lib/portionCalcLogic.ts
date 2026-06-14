@@ -14,10 +14,19 @@ export interface FinalEstimation {
 }
 
 
-function calclNumberOfSets(units: number, unitsPerSet: number, oveNumber : number): number {
+function calclNumberOfSets(units: number, unitsPerSet: number, oveNumber: number): number {
+	if (unitsPerSet <= 0 || oveNumber <= 0) {
+		throw new Error("La capacidad por set y el número de hornos deben ser mayores a cero.");
+	}
+	
+	if (units <= 0) {
+		return 0; 
+	}
+
 	if (units <= unitsPerSet) {
 		return 1;
 	}
+	
 	return Math.ceil(units / (unitsPerSet * oveNumber));
 }
 
