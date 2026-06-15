@@ -14,7 +14,7 @@ export interface FinalEstimation {
 }
 
 
-function calclNumberOfSets(units: number, unitsPerSet: number, oveNumber: number): number {
+export function calclNumberOfSets(units: number, unitsPerSet: number, oveNumber: number): number {
 	if (unitsPerSet <= 0 || oveNumber <= 0) {
 		throw new Error("La capacidad por set y el número de hornos deben ser mayores a cero.");
 	}
@@ -30,11 +30,11 @@ function calclNumberOfSets(units: number, unitsPerSet: number, oveNumber: number
 	return Math.ceil(units / (unitsPerSet * oveNumber));
 }
 
-function calcTimeInOven(sets: number, ovenTime: number): number {
+export function calcTimeInOven(sets: number, ovenTime: number): number {
 	return sets * ovenTime;
 }
 
-function CalcHandlingTime(tiempoDeManiobra: number, sets: number, oveNumber: number): number {
+export function CalcHandlingTime(tiempoDeManiobra: number, sets: number, oveNumber: number): number {
 	if (sets == 1){
 		return tiempoDeManiobra;
 	}
