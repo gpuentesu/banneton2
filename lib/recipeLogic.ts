@@ -35,6 +35,11 @@ export function addComponentPercentage(
     if(circularDependencyExists){
         throw new Error("Circular dependency detected")
     }
+
+    if(newComponent.quantity <0 || newComponent.quantity > 100){
+        throw new Error("The percentage must be between 0 and 100")
+    }
+
     return{
         ...recipeToChange,
         components: [...recipeToChange.components, newComponent]
@@ -43,6 +48,10 @@ export function addComponentPercentage(
     // valor temporal
     return {recipeId: 1, name: "s", components: [...recipeToChange.components, newComponent]};
 }
+
+
+
+
 
 // me confunde el retorno de añadir un componente, acaso devuelve una receta, que son IDs, nombre, y su arreglo de relaciones? y luego devuelve lo anterior pero desde la perspectiva del neuvo componente?
 export function isExistingComponent(
