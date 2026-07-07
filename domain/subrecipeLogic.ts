@@ -8,49 +8,49 @@ export type RecipeRelation = {
 
 export function isCircularyDependent(
 
-    targetParentId: number,
-    componentToAddId: number,
-    currentRelations: RecipeRelation[]
+	targetParentId: number,
+	componentToAddId: number,
+	currentRelations: RecipeRelation[]
 
 ): boolean {
 
-    if (targetParentId == componentToAddId){
+	if (targetParentId == componentToAddId){
 
-        return true
-    }
+		return true;
+	}
 
-    const childrenMap = new Map<number, number[]>();
-    for(const rel of currentRelations){
-        if (!childrenMap.has(rel.parentId)){
-            childrenMap.set(rel.parentId, []);
-        }
-        childrenMap.get(rel.parentId)!.push(rel.childId)
-    }
+	const childrenMap = new Map<number, number[]>();
+	for(const rel of currentRelations){
+		if (!childrenMap.has(rel.parentId)){
+			childrenMap.set(rel.parentId, []);
+		}
+        childrenMap.get(rel.parentId)!.push(rel.childId);
+	}
 
-    const stack = [componentToAddId];
-    const visited = new Set<number>();
+	const stack = [componentToAddId];
+	const visited = new Set<number>();
 
-    while (stack.length > 0){
-        const currentNode =stack.pop()!;
+	while (stack.length > 0){
+		const currentNode =stack.pop()!;
         
-        if(currentNode === targetParentId) {
-            return true;
-        }
+		if(currentNode === targetParentId) {
+			return true;
+		}
 
-        if(!visited.has(currentNode)){
-            visited.add(currentNode);
+		if(!visited.has(currentNode)){
+			visited.add(currentNode);
             
-            const children = childrenMap.get(currentNode) || [];
-            for(const child of children){
-                stack.push(child);
-            }
+			const children = childrenMap.get(currentNode) || [];
+			for(const child of children){
+				stack.push(child);
+			}
 
-        }
+		}
 
 
-    }
+	}
 
     
     
-    return false;
+	return false;
 }

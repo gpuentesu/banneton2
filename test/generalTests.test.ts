@@ -8,16 +8,16 @@ import {
 } from "../domain/portionCalcLogic"; 
 
 import{computeIngredientRealCost,
-    computeBruteCostPerPound,
-    computeBruteCostPerKilo,
-    computeRealCostPerPound,
-    computeRealCostPerKilo,
-    computeHydrationAmount} from '../domain/ingredientLogic';
+	computeBruteCostPerPound,
+	computeBruteCostPerKilo,
+	computeRealCostPerPound,
+	computeRealCostPerKilo,
+	computeHydrationAmount} from "../domain/ingredientLogic";
 
 import{
 	isCircularyDependent,
 	RecipeRelation
-} from '../domain/subrecipeLogic';
+} from "../domain/subrecipeLogic";
 
 describe("Oven Time Estimation Functions", () => {
 
@@ -321,32 +321,32 @@ describe("Ingredient logic functions", () => {
 });
 describe("Subrecipe logic functions)", () => {
     
-    // Setup for the tests
-    const inMemoryRelations: RecipeRelation[] = [
-        { parentId: 10, childId: 11 }, 
-        { parentId: 11, childId: 12 }, 
-    ];
+	// Setup for the tests
+	const inMemoryRelations: RecipeRelation[] = [
+		{ parentId: 10, childId: 11 }, 
+		{ parentId: 11, childId: 12 }, 
+	];
 
-    describe("1. isCircularyDependent (Validation Logic)", () => {
+	describe("1. isCircularyDependent (Validation Logic)", () => {
 
-        it("It should return false if adding a new independent ingredient (Happy Path)", () => {
-            const hayCiclo = isCircularyDependent(10, 99, inMemoryRelations);
-            expect(hayCiclo).toBe(false);
-        });
+		it("It should return false if adding a new independent ingredient (Happy Path)", () => {
+			const hayCiclo = isCircularyDependent(10, 99, inMemoryRelations);
+			expect(hayCiclo).toBe(false);
+		});
 
-        it("It should return true if a recipe attempts to add itself (Direct Cycle)", () => {
-            const hayCiclo = isCircularyDependent(10, 10, inMemoryRelations);
-            expect(hayCiclo).toBe(true);
-        });
+		it("It should return true if a recipe attempts to add itself (Direct Cycle)", () => {
+			const hayCiclo = isCircularyDependent(10, 10, inMemoryRelations);
+			expect(hayCiclo).toBe(true);
+		});
 
-        it("It should return true if an indirect circular dependency is created (A -> B -> C -> A)", () => {
-            const hayCiclo = isCircularyDependent(12, 10, inMemoryRelations);
-            expect(hayCiclo).toBe(true);
-        });
+		it("It should return true if an indirect circular dependency is created (A -> B -> C -> A)", () => {
+			const hayCiclo = isCircularyDependent(12, 10, inMemoryRelations);
+			expect(hayCiclo).toBe(true);
+		});
 
-        it("It should return false if two different recipes use the same sub-recipe (Legal Reuse)", () => {
-            const hayCiclo = isCircularyDependent(20, 11, inMemoryRelations);
-            expect(hayCiclo).toBe(false);
-        });
-    });
+		it("It should return false if two different recipes use the same sub-recipe (Legal Reuse)", () => {
+			const hayCiclo = isCircularyDependent(20, 11, inMemoryRelations);
+			expect(hayCiclo).toBe(false);
+		});
+	});
 });

@@ -1,0 +1,82 @@
+.
+├── app
+│   ├── api
+│   │   ├── ingredients
+│   │   │   └── route.ts
+│   │   └── roles
+│   │       └── route.ts
+│   ├── calculadora-porciones
+│   │   └── page.tsx
+│   ├── favicon.ico
+│   ├── globals.css
+│   ├── layout.tsx
+│   ├── page.tsx
+│   └── recipes
+│       └── page.tsx
+├── docker-compose.prod.yml
+├── docker-compose.yml
+├── Dockerfile
+├── .dockerignore
+├── domain
+│   ├── ingredientLogic.ts
+│   ├── portionCalcLogic.ts
+│   ├── recipeLogic.ts
+│   ├── subrecipeLogic.ts
+│   └── useCases
+│       └── ingredient
+│           ├── DeleteIngredient.usecase.ts
+│           ├── ModifyIngredient.usecase.ts
+│           └── RegisterIngredient.usecase.ts
+├── .env.example
+├── eslint.config.mjs
+├── generated
+│   └── prisma
+│       ├── browser.ts
+│       ├── client.ts
+│       ├── commonInputTypes.ts
+│       ├── enums.ts
+│       ├── internal
+│       │   ├── class.ts
+│       │   ├── prismaNamespaceBrowser.ts
+│       │   └── prismaNamespace.ts
+│       ├── models
+│       │   ├── articulo_proveedor.ts
+│       │   ├── catalogo_componente.ts
+│       │   ├── detalle_formulacion.ts
+│       │   ├── ingrediente_base.ts
+│       │   ├── proveedor.ts
+│       │   ├── receta_subreceta.ts
+│       │   ├── rol.ts
+│       │   ├── servicio_costo.ts
+│       │   └── usuario.ts
+│       └── models.ts
+├── .gitignore
+├── lib
+│   └── prisma.ts
+├── next.config.ts
+├── package.json
+├── pnpm-lock.yaml
+├── postcss.config.mjs
+├── prisma
+│   └── schema.prisma
+├── prisma.config.ts
+├── project_structure.txt
+├── public
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── README.md
+├── setup.bat
+├── setup.sh
+├── test
+│   ├── generalTests.test.ts
+│   └── recipeLogic.test.ts
+├── tsconfig.json
+├── utils
+├── vitest.config.ts
+└── .vscode
+    └── settings.json
+
+20 directories, 60 files
