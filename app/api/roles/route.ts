@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/domain/prisma";
+import { prisma } from "@/lib/prisma";
 
 // GET /api/roles — Lista todos los roles (entidad base del sistema)
 export async function GET() {
