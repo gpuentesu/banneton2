@@ -1,6 +1,6 @@
-import { VersionSelectionResult } from "../lib/types/subrecipe";
-import { SUBRECIPES } from "../lib/data/subrecipes";
-import { findMasterRecipeById } from "../lib/data/recipes";
+import { VersionSelectionResult } from "../domain/types/subrecipe";
+import { SUBRECIPES } from "../domain/data/subrecipes";
+import { findMasterRecipeById } from "../domain/data/recipes";
 import { getVersionSummaries, selectVersion } from "../utils/subrecipeUtils";
 
 let currentVersionId: string = "v1";

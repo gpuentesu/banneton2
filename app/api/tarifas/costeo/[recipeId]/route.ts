@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { RECIPE_FOR_COST_CALCULATION } from "../../../../../lib/data/utilities";
+import { RECIPE_FOR_COST_CALCULATION } from "../../../../../domain/data/utilities";
 import { computeServiceCosts } from "../../../../../services/utilityCostService";
 
 export async function GET(

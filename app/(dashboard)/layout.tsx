@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BookOpen, Settings, DollarSign, BarChart3, Croissant } from "lucide-react";
+import { BookOpen, Settings, DollarSign, BarChart3, Croissant, ClipboardList } from "lucide-react";
 import {
 	Select,
 	SelectContent,
@@ -14,6 +14,7 @@ import {
 
 const navItems = [
 	{ path: "/recetas", label: "Recetas", icon: BookOpen },
+	{ path: "/produccion", label: "Producción", icon: ClipboardList },
 	{ path: "/configuracion", label: "Configuración", icon: Settings },
 	{ path: "/costos", label: "Costos", icon: DollarSign },
 	{ path: "/reportes", label: "Reportes", icon: BarChart3 },
@@ -27,7 +28,7 @@ export default function DashboardLayout({
 	const pathname = usePathname();
 	const [role, setRole] = useState("maestro");
 
-	const isActive = (path: string) => pathname === path;
+	const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`);
 
 	return (
 		<div className="flex h-screen bg-background overflow-hidden">

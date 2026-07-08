@@ -1,7 +1,7 @@
 import { describe, test, expect } from "vitest";
 import { createRecipe, addComponent, removeComponent, ComponentInRecipe } from "../domain/recipeLogic";
 import { create } from "domain";
-import { RecipeRelation } from "@/lib/subrecipeLogic";
+import { RecipeRelation } from "@/domain/subrecipeLogic";
 
 describe("Recipe Logic functions - RF_03", () => {
     

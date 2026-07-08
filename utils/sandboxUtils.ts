@@ -10,8 +10,8 @@ import {
 	SANDBOX_EXPIRY_MINUTES,
 	HYDRATION_MIN_PERCENTAGE,
 	HYDRATION_MAX_PERCENTAGE,
-} from "../lib/types/sandbox";
-import { Ingredient } from "../lib/types/recipe";
+} from "../domain/types/sandbox";
+import { Ingredient } from "../domain/types/recipe";
 
 export function createSession(masterRecipe: MasterRecipe): SandboxSession {
 	return {

@@ -28,22 +28,22 @@ export class RegisterIngredientUseCase {
 			const newIngredient = await prisma.catalogo_componente.create({
 				data: {
 					nombre: data.nombre,
-					tipoComponente: "INGREDIENTE", // Hardcoded discriminator
-					unidadMedida: data.unidad_medida,
-                    
+					tipo_componente: "INGREDIENTE", // Hardcoded discriminator
+					unidad_medida: data.unidad_medida,
+
 					// 1st Nested Insert: Create the ingrediente_base record
-					ingredienteBase: {
+					ingrediente_base: {
 						create: {
-							aportaABasePanadera: data.aporta_a_base_panadera,
-                            
+							aporta_a_base_panadera: data.aporta_a_base_panadera,
+
 							// 2nd Nested Insert: Create the financial/chemical data
-							articuloProveedor: {
+							articulo_proveedor: {
 								create: {
-									idProveedor: 1, // The dummy provider for MVP!
-									costoPorUnidad: data.costo_por_unidad, // Or realCost
-									porcentajeAgua: data.porcentaje_agua,
-									porcentajeGrasa: data.porcentaje_grasa,
-									porcentajeMermaLimpieza: data.porcentaje_merma
+									id_proveedor: 1, // The dummy provider for MVP!
+									costo_por_unidad: data.costo_por_unidad, // Or realCost
+									porcentaje_agua: data.porcentaje_agua,
+									porcentaje_grasa: data.porcentaje_grasa,
+									porcentaje_merma_limpieza: data.porcentaje_merma
 								}
 							}
 						}
@@ -51,8 +51,8 @@ export class RegisterIngredientUseCase {
 				},
 				// Tell Prisma to return the fully joined object so we can see it
 				include: {
-					ingredienteBase: {
-						include: { articuloProveedor: true }
+					ingrediente_base: {
+						include: { articulo_proveedor: true }
 					}
 				}
 			});

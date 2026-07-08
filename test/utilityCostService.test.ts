@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { updateTariffs, getTariffs, computeServiceCosts } from "../services/utilityCostService";
-import { DEFAULT_UTILITY_TARIFFS } from "../lib/data/utilities";
-import { RECIPE_FOR_COST_CALCULATION } from "../lib/data/utilities";
-import type { UtilityTariffs } from "../lib/types/utilities";
+import { DEFAULT_UTILITY_TARIFFS } from "../domain/data/utilities";
+import { RECIPE_FOR_COST_CALCULATION } from "../domain/data/utilities";
+import type { UtilityTariffs } from "../domain/types/utilities";
 
 function validTariffs(): UtilityTariffs {
 	return structuredClone(DEFAULT_UTILITY_TARIFFS);

@@ -1,6 +1,6 @@
-import { Subrecipe, SubrecipeVersion, SubrecipeVersionSummary, VersionSelectionResult } from "../lib/types/subrecipe";
-import { MasterRecipe } from "../lib/types/sandbox";
-import { Ingredient } from "../lib/types/recipe";
+import { Subrecipe, SubrecipeVersion, SubrecipeVersionSummary, VersionSelectionResult } from "../domain/types/subrecipe";
+import { MasterRecipe } from "../domain/types/sandbox";
+import { Ingredient } from "../domain/types/recipe";
 
 export function getVersionSummaries(subrecipe: Subrecipe): SubrecipeVersionSummary[] {
 	return subrecipe.versions

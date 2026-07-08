@@ -17,7 +17,7 @@ import{computeIngredientRealCost,
 import{
 	isCircularyDependent,
 	RecipeRelation
-} from "../lib/subrecipeLogic";
+} from "../domain/subrecipeLogic";
 
 describe("Oven Time Estimation Functions", () => {
 

@@ -1,5 +1,5 @@
-import { UtilityTariffs, UtilityCostBreakdown, RecipeCostSummary, TariffValidationError } from "../lib/types/utilities";
-import { MasterRecipe, BakingParameters } from "../lib/types/sandbox";
+import { UtilityTariffs, UtilityCostBreakdown, RecipeCostSummary, TariffValidationError } from "../domain/types/utilities";
+import { MasterRecipe, BakingParameters } from "../domain/types/sandbox";
 
 export const OVEN_USAGE_PERCENTAGE_DEFAULT = 0.85;
 

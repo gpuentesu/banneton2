@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SUBRECIPES } from "../../../../../../lib/data/subrecipes";
+import { SUBRECIPES } from "../../../../../../domain/data/subrecipes";
 import { findVersionById } from "../../../../../../utils/subrecipeUtils";
 
 export async function GET(

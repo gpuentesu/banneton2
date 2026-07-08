@@ -1,5 +1,5 @@
-import { SandboxSession, SandboxComparison, SandboxMetrics, SandboxModification } from "../lib/types/sandbox";
-import { findMasterRecipeById } from "../lib/data/recipes";
+import { SandboxSession, SandboxComparison, SandboxMetrics, SandboxModification } from "../domain/types/sandbox";
+import { findMasterRecipeById } from "../domain/data/recipes";
 import { createSession, computeSandboxMetrics, compareSessions, isSessionExpired } from "../utils/sandboxUtils";
 
 const activeSessions: Map<string, SandboxSession> = new Map();

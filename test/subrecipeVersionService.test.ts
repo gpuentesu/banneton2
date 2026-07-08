@@ -44,7 +44,7 @@ describe("CU_10: applyVersion — subrecipe version selection", () => {
 
 		expect(list.currentVersionId).toBe("v2");
 		expect(list.versions).toBeDefined();
-		expect(list.versions.length).toBeGreaterThanOrEqual(1);
+		expect(list.versions!.length).toBeGreaterThanOrEqual(1);
 	});
 
 	it("should compute correct cost variation when selecting v3 after v2", () => {

@@ -1,7 +1,7 @@
-import { UtilityTariffs, RecipeCostSummary, TariffValidationError } from "../lib/types/utilities";
-import { DEFAULT_UTILITY_TARIFFS } from "../lib/data/utilities";
+import { UtilityTariffs, RecipeCostSummary, TariffValidationError } from "../domain/types/utilities";
+import { DEFAULT_UTILITY_TARIFFS } from "../domain/data/utilities";
 import { computeRecipeCost, validateTariffs } from "../utils/utilityCostUtils";
-import { MasterRecipe } from "../lib/types/sandbox";
+import { MasterRecipe } from "../domain/types/sandbox";
 
 let currentTariffs: UtilityTariffs = structuredClone(DEFAULT_UTILITY_TARIFFS);
 
