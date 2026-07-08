@@ -84,6 +84,42 @@ model receta_subreceta {
   usuario                  usuario?              @relation(fields: [creado_por], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
   catalogo_componente      catalogo_componente   @relation(fields: [id_componente], references: [id_componente], onDelete: Cascade, onUpdate: NoAction)
   sesion_taller            sesion_taller[]
+  reporte_produccion       reporte_produccion[]
+}
+
+// RF_16 — Generar reporte de producción
+model reporte_produccion {
+  id_reporte           Int                @id @default(autoincrement())
+  id_receta            Int
+  identificador_lote   String             @unique @db.VarChar(50)
+  fecha_produccion     DateTime           @db.Date
+  hora_produccion      DateTime           @db.Time(0)
+  cantidad_producida   Decimal            @db.Decimal(10, 2)
+  unidad_medida        String             @db.VarChar(20)
+  id_responsable       Int
+  id_supervisor        Int?
+  observaciones        String?            @db.VarChar(500)
+  creado_por           Int?
+  creado_en            DateTime?          @default(now()) @db.Timestamp(6)
+  receta_subreceta     receta_subreceta   @relation(fields: [id_receta], references: [id_componente], onDelete: NoAction, onUpdate: NoAction)
+  responsable          usuario            @relation("reporte_produccion_responsable", fields: [id_responsable], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  supervisor           usuario?           @relation("reporte_produccion_supervisor", fields: [id_supervisor], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  creador              usuario?           @relation("reporte_produccion_creador", fields: [creado_por], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  tanda_produccion     tanda_produccion[]
+
+  @@index([id_receta], map: "idx_reporte_produccion_receta")
+  @@index([fecha_produccion], map: "idx_reporte_produccion_fecha")
+}
+
+// Tandas/lotes parciales de horneado asociados a un reporte de producción (RF_16)
+model tanda_produccion {
+  id_tanda           Int                @id @default(autoincrement())
+  id_reporte         Int
+  numero_tanda       Int
+  cantidad           Decimal            @db.Decimal(10, 2)
+  reporte_produccion reporte_produccion @relation(fields: [id_reporte], references: [id_reporte], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([id_reporte, numero_tanda], map: "uk_reporte_tanda")
 }
 
 // RF_15 — Verificar ingredientes y pasos de elaboración (Modo Taller)
@@ -143,6 +179,9 @@ model usuario {
   rol              rol                @relation(fields: [id_rol], references: [id_rol], onDelete: NoAction, onUpdate: NoAction)
   parametros_ambientales    parametro_ambiental[]
   sesiones_taller           sesion_taller[]
+  reportes_como_responsable reporte_produccion[] @relation("reporte_produccion_responsable")
+  reportes_como_supervisor  reporte_produccion[] @relation("reporte_produccion_supervisor")
+  reportes_creados          reporte_produccion[] @relation("reporte_produccion_creador")
 }
 
 // RF_08 — Registrar variables geográficas y ambientales

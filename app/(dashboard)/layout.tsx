@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BookOpen, Settings, DollarSign, BarChart3, Croissant, ClipboardCheck, CloudSun } from "lucide-react";
+import { BookOpen, Settings, DollarSign, BarChart3, Croissant, ClipboardCheck, CloudSun, ClipboardList } from "lucide-react";
 import {
 	Select,
 	SelectContent,
@@ -15,6 +15,7 @@ import {
 const navItems = [
 	{ path: "/recetas", label: "Recetas", icon: BookOpen },
 	{ path: "/taller", label: "Modo Taller", icon: ClipboardCheck },
+	{ path: "/produccion", label: "Producción", icon: ClipboardList },
 	{ path: "/ambiente", label: "Ambiente", icon: CloudSun },
 	{ path: "/configuracion", label: "Configuración", icon: Settings },
 	{ path: "/costos", label: "Costos", icon: DollarSign },
