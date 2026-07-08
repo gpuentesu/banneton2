@@ -84,6 +84,40 @@ model receta_subreceta {
   usuario                  usuario?              @relation(fields: [creado_por], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
   catalogo_componente      catalogo_componente   @relation(fields: [id_componente], references: [id_componente], onDelete: Cascade, onUpdate: NoAction)
   reporte_produccion       reporte_produccion[]
+  sesion_taller            sesion_taller[]
+}
+
+// RF_15 — Verificar ingredientes y pasos de elaboración (Modo Taller)
+// Una sesión de taller es la ejecución de una receta; su lista de verificación
+// (items) persiste el avance para permitir reanudar si la sesión se interrumpe.
+model sesion_taller {
+  id_sesion          Int                 @id @default(autoincrement())
+  id_receta          Int
+  identificador_lote String?             @db.VarChar(50)
+  estado             String              @default("en_progreso") @db.VarChar(20) // en_progreso | completada
+  creado_por         Int?
+  creado_en          DateTime?           @default(now()) @db.Timestamp(6)
+  actualizado_en     DateTime?           @db.Timestamp(6)
+  receta_subreceta   receta_subreceta    @relation(fields: [id_receta], references: [id_componente], onDelete: NoAction, onUpdate: NoAction)
+  creador            usuario?            @relation(fields: [creado_por], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  items              item_verificacion[]
+
+  @@index([id_receta], map: "idx_sesion_taller_receta")
+}
+
+model item_verificacion {
+  id_item       Int           @id @default(autoincrement())
+  id_sesion     Int
+  tipo          String        @db.VarChar(20) // ingrediente | paso
+  descripcion   String        @db.VarChar(255)
+  cantidad      Decimal?      @db.Decimal(10, 2)
+  unidad_medida String?       @db.VarChar(20)
+  orden         Int
+  completado    Boolean       @default(false)
+  completado_en DateTime?     @db.Timestamp(6)
+  sesion_taller sesion_taller @relation(fields: [id_sesion], references: [id_sesion], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([id_sesion], map: "idx_item_verificacion_sesion")
 }
 
 model rol {
@@ -146,4 +180,24 @@ model usuario {
   reportes_como_responsable reporte_produccion[] @relation("reporte_produccion_responsable")
   reportes_como_supervisor  reporte_produccion[] @relation("reporte_produccion_supervisor")
   reportes_creados          reporte_produccion[] @relation("reporte_produccion_creador")
+  parametros_ambientales    parametro_ambiental[]
+  sesiones_taller           sesion_taller[]
+}
+
+// RF_08 — Registrar variables geográficas y ambientales
+// Cada registro es una "foto" versionada de las condiciones del taller; el
+// sistema usa el más reciente para el recálculo de recetas sensibles.
+model parametro_ambiental {
+  id_parametro              Int       @id @default(autoincrement())
+  humedad_relativa          Decimal   @db.Decimal(5, 2)  // %
+  temperatura_ambiente      Decimal   @db.Decimal(5, 2)  // °C
+  altitud                   Decimal   @db.Decimal(7, 2)  // m.s.n.m.
+  presion_barometrica       Decimal   @db.Decimal(6, 2)  // hPa
+  ciudad_referencia         String?   @db.VarChar(100)
+  sincronizacion_automatica Boolean?  @default(false)
+  creado_por                Int?
+  creado_en                 DateTime? @default(now()) @db.Timestamp(6)
+  creador                   usuario?  @relation(fields: [creado_por], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([creado_en], map: "idx_parametro_ambiental_fecha")
 }
