@@ -1,0 +1,26 @@
+# Git y config local
+.git
+.gitignore
+.env
+.env.local
+.opencode/
+
+# Dependencias (se instalan en el contenedor)
+node_modules/
+pnpm-lock.yaml?backup
+
+# Build artifacts
+.next/
+out/
+dist/
+
+# Docker mismo
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Documentos (viven en project-docs)
+Documentation/
+assignments/
+*.md
+!README.md

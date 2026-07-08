@@ -1,0 +1,110 @@
+generator client {
+	provider = "prisma-client-js"
+}
+
+datasource db {
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
+}
+
+model articulo_proveedor {
+  id_articulo               Int                   @id @default(autoincrement())
+  id_componente             Int
+  id_proveedor              Int
+  marca_descripcion         String?               @db.VarChar(100)
+  costo_por_unidad          Decimal               @db.Decimal(10, 4)
+  porcentaje_agua           Decimal?              @default(0.00) @db.Decimal(5, 2)
+  porcentaje_grasa          Decimal?              @default(0.00) @db.Decimal(5, 2)
+  porcentaje_merma_limpieza Decimal?              @default(0.00) @db.Decimal(5, 2)
+  es_predeterminado         Boolean?              @default(false)
+  creado_en                 DateTime?             @default(now()) @db.Timestamp(6)
+  ingrediente_base          ingrediente_base      @relation(fields: [id_componente], references: [id_componente], onDelete: NoAction, onUpdate: NoAction)
+  proveedor                 proveedor             @relation(fields: [id_proveedor], references: [id_proveedor], onDelete: NoAction, onUpdate: NoAction)
+  detalle_formulacion       detalle_formulacion[]
+
+  @@unique([id_componente, id_proveedor], map: "uk_componente_proveedor")
+}
+
+model catalogo_componente {
+  id_componente       Int                   @id @default(autoincrement())
+  nombre              String                @db.VarChar(100)
+  tipo_componente     String                @db.VarChar(20)
+  unidad_medida       String                @db.VarChar(20)
+  activo              Boolean?              @default(true) // <-- NUEVO: Para el Soft Delete
+  detalle_formulacion detalle_formulacion[]
+  ingrediente_base    ingrediente_base?
+  receta_subreceta    receta_subreceta?
+  servicio_costo      servicio_costo?
+}
+
+model detalle_formulacion {
+  id_detalle             Int                 @id @default(autoincrement())
+  id_receta_padre        Int
+  id_componente_hijo     Int
+  id_articulo_especifico Int?
+  cantidad_usada         Decimal             @db.Decimal(10, 4)
+  unidad_medida_usada    String              @db.VarChar(20) // <-- NUEVO: Fuente de la verdad
+  nota_preparacion       String?             @db.VarChar(255)
+  articulo_proveedor     articulo_proveedor? @relation(fields: [id_articulo_especifico], references: [id_articulo], onDelete: NoAction, onUpdate: NoAction)
+  catalogo_componente    catalogo_componente @relation(fields: [id_componente_hijo], references: [id_componente], onDelete: NoAction, onUpdate: NoAction)
+  receta_subreceta       receta_subreceta    @relation(fields: [id_receta_padre], references: [id_componente], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([id_receta_padre, id_componente_hijo], map: "uk_padre_hijo")
+  @@index([id_componente_hijo], map: "idx_componente_hijo")
+}
+
+model ingrediente_base {
+  id_componente          Int                  @id
+  aporta_a_base_panadera Boolean?             @default(false)
+  articulo_proveedor     articulo_proveedor[]
+  catalogo_componente    catalogo_componente  @relation(fields: [id_componente], references: [id_componente], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model proveedor {
+  id_proveedor       Int                  @id @default(autoincrement())
+  nombre_proveedor   String               @db.VarChar(100)
+  telefono           String?              @db.VarChar(20)
+  email              String?              @db.VarChar(100)
+  direccion          String?
+  activo             Boolean?             @default(true)
+  creado_en          DateTime?            @default(now()) @db.Timestamp(6)
+  articulo_proveedor articulo_proveedor[]
+}
+
+model receta_subreceta {
+  id_componente            Int                   @id
+  ppu_objetivo             Decimal?              @db.Decimal(10, 2)
+  unidades_tanda           Int?                  @default(1)
+  porcentaje_merma_coccion Decimal?              @default(0.00) @db.Decimal(5, 2)
+  // <-- ELIMINADOS: grasa_total, agua_hidratacion y costo_calculado.
+  creado_por               Int?
+  creado_en                DateTime?             @default(now()) @db.Timestamp(6)
+  actualizado_en           DateTime?             @db.Timestamp(6)
+  detalle_formulacion      detalle_formulacion[]
+  usuario                  usuario?              @relation(fields: [creado_por], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction)
+  catalogo_componente      catalogo_componente   @relation(fields: [id_componente], references: [id_componente], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model rol {
+  id_rol     Int       @id @default(autoincrement())
+  nombre_rol String    @unique @db.VarChar(30)
+  usuario    usuario[]
+}
+
+model servicio_costo {
+  id_componente           Int                 @id
+  costo_por_unidad_medida Decimal             @db.Decimal(10, 4)
+  catalogo_componente     catalogo_componente @relation(fields: [id_componente], references: [id_componente], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model usuario {
+  id_usuario       Int                @id @default(autoincrement())
+  nombre_usuario   String             @db.VarChar(50)
+  apellido_usuario String?            @db.VarChar(100)
+  email            String            @unique @db.VarChar(100)
+  password         String             @db.VarChar(255)
+  id_rol           Int
+  activo           Boolean?           @default(true)
+  receta_subreceta receta_subreceta[]
+  rol              rol                @relation(fields: [id_rol], references: [id_rol], onDelete: NoAction, onUpdate: NoAction)
+}

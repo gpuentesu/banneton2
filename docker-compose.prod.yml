@@ -1,0 +1,36 @@
+# =============================================================
+# docker-compose.prod.yml — Banneton · Producción
+# Build completo, sin volúmenes de código
+# =============================================================
+
+services:
+  # ─────────────────────────────────────────
+  # Aplicación Next.js
+  # ─────────────────────────────────────────
+  app:
+    build: .
+    container_name: banneton_app
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: ${DATABASE_URL}
+    depends_on:
+      - postgres
+
+  # ─────────────────────────────────────────
+  # Base de datos PostgreSQL
+  # ─────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: banneton_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: banneton
+    volumes:
+      - banneton_pgdata:/var/lib/postgresql/data
+
+volumes:
+  banneton_pgdata:
+    name: banneton_pgdata
