@@ -19,7 +19,9 @@ services:
       - .:/app            # Código fuente local → contenedor (hot-reload)
       - /app/node_modules # node_modules del contenedor (no se sobreescribe)
       - /app/.next        # build cache del contenedor
-    command: pnpm dev
+    # Sincroniza el esquema en la BD (crea las tablas) y luego arranca el dev
+    # server. Evita el paso manual de "prisma db push" tras clonar.
+    command: sh -c "npx prisma db push --skip-generate && pnpm dev"
     depends_on:
       postgres:
         condition: service_healthy
