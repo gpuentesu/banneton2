@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { RegisterIngredientUseCase } from "@/domain/useCases/ingredient/RegisterIngredient.usecase"; 
-import { prisma } from "@/lib/prisma"; 
+import { RegisterIngredientUseCase } from "@/services/ingredient/RegisterIngredient.usecase"; 
+import { prisma } from "@/domain/prisma"; 
 
 // ==========================================
 // POST: CREAR UN NUEVO INGREDIENTE

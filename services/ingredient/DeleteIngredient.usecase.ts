@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
-import { prisma } from "@/lib/prisma";
-
+import { prisma } from "@/domain/prisma";
 export class DeleteIngredientUseCase {
 	async execute(id: number) {
 		try {

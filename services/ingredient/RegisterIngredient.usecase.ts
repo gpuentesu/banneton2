@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
-import { prisma } from "@/lib/prisma";
-
+import { prisma } from "@/domain/prisma";
 export interface CreateIngredientDTO {
 	nombre: string;
 	tipo_componente: string;
