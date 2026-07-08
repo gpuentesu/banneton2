@@ -101,7 +101,8 @@ model usuario {
   id_usuario       Int                @id @default(autoincrement())
   nombre_usuario   String             @db.VarChar(50)
   apellido_usuario String?            @db.VarChar(100)
-  email            String?            @unique @db.VarChar(100)
+  email            String            @unique @db.VarChar(100)
+  password         String             @db.VarChar(255)
   id_rol           Int
   activo           Boolean?           @default(true)
   receta_subreceta receta_subreceta[]
